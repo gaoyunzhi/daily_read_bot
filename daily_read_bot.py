@@ -20,7 +20,7 @@ with open('pool') as f:
 pool = [channel for channel in pool if channel]
 
 Day = 24 * 60 * 60
-Limit = 20
+Limit = 10
 
 def getPosts():
     start = time.time()

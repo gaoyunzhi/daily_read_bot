@@ -20,7 +20,8 @@ def getCnLink(link):
 		return
 	link = clearUrl(link)
 	# getTitle by default will cache
-	if matchKey(export_to_telegraph.getTitle(link), ['链接已过期']):
+	if matchKey(export_to_telegraph.getTitle(link), [
+		'链接已过期', '仅限男生', '男生350分']):
 		return False
 	return link
 
