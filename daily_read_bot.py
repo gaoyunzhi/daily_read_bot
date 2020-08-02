@@ -12,7 +12,7 @@ import itertools
 with open('token') as f:
     token = f.read().strip()
 
-tele = Updater(token, use_context=True)
+tele = Updater(token, use_context=True) # @daily_read_bot
 debug_group = tele.bot.get_chat(420074357)
 
 with open('pool') as f:
