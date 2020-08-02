@@ -6,7 +6,7 @@ from telegram_util import log_on_fail, compactText
 from telegram.ext import Updater, MessageHandler, Filters
 import time
 import random
-from .util import getLink
+from util import getLink
 import itertools
 
 with open('token') as f:
@@ -70,6 +70,7 @@ def yieldDailyRead():
 
 def getDailyRead():
     items = itertools.islice(yieldDailyRead(), Limit)
+    return '每日文章精选\n\n' + '\n\n'.join(['【%s】%s' % item for item in items])
 
 def sendDailyRead(msg):
     removeOldFiles('tmp', day=0.1)
