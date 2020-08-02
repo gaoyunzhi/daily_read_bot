@@ -1,6 +1,11 @@
-# telegram_summary_generation
-
-subscribe message from a list of channels, and send daily summary to destination group/channel.
-
-Will add more details if more than 10 people star the repo.# daily_read_bot
 # daily_read_bot
+
+将pool中telegram消息整合，方便发回墙内。
+
+实例： https://t.me/daily_read_bot
+
+命令:
+/dr_get: 抓取最新消息
+
+
+
