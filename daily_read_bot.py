@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import webgram
-from telegram_util import log_on_fail, compactText
+from telegram_util import log_on_fail, compactText, removeOldFiles
 from telegram.ext import Updater, MessageHandler, Filters
 import time
 import random
@@ -86,7 +86,7 @@ def sendDailyRead(msg):
 @log_on_fail(debug_group)
 def handleCommand(update, context):
     msg = update.effective_message
-    if not msg.startswith('/dr'):
+    if not msg.text.startswith('/dr'):
         return
     sendDailyRead(msg)
     msg.delete()
