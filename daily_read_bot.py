@@ -76,7 +76,7 @@ def getDailyRead():
     return '每日文章精选\n\n' + '\n\n'.join(lines)
 
 def sendDailyRead(msg):
-    tmp = msg.reply_message('sending')
+    tmp = msg.reply_text('sending')
     removeOldFiles('tmp', day=0.1)
     if 'force' in msg.text:
         removeOldFiles('tmp', day=0)
