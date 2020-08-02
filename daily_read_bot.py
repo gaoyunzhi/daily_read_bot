@@ -102,3 +102,5 @@ if __name__ == '__main__':
     dp = tele.dispatcher
     dp.add_handler(MessageHandler(Filters.command & (~ Filters.private), handleCommand))
     dp.add_handler(MessageHandler(Filters.private, handlePrivate))
+    tele.start_polling()
+    tele.idle()
