@@ -20,6 +20,7 @@ with open('pool') as f:
 pool = [channel for channel in pool if channel]
 
 Day = 24 * 60 * 60
+Limit = 20
 
 def getPosts():
     start = time.time()
@@ -70,13 +71,17 @@ def yieldDailyRead():
 
 def getDailyRead():
     items = itertools.islice(yieldDailyRead(), Limit)
-    return '每日文章精选\n\n' + '\n\n'.join(['【%s】%s' % item for item in items])
+    lines = ['【%s】%s' % item for item in items]
+    lines = ['%d. %s' % (index + 1, item) for index, item in enumerate(lines)]
+    return '每日文章精选\n\n' + '\n\n'.join(lines)
 
 def sendDailyRead(msg):
+    tmp = msg.reply_message('sending')
     removeOldFiles('tmp', day=0.1)
     if 'force' in msg.text:
         removeOldFiles('tmp', day=0)
     tele.bot.send_message(msg.chat_id, getDailyRead(), disable_web_page_preview=True)
+    tmp.delete()
 
 @log_on_fail(debug_group)
 def handleCommand(update, context):
@@ -94,7 +99,6 @@ def handlePrivate(update, context):
     sendDailyRead(msg)
 
 if __name__ == '__main__':
-    getDailyRead() # test
     dp = tele.dispatcher
     dp.add_handler(MessageHandler(Filters.command & (~ Filters.private), handleCommand))
     dp.add_handler(MessageHandler(Filters.private, handlePrivate))
