@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import webgram
-from telegram_util import log_on_fail, compactText, removeOldFiles
+from telegram_util import log_on_fail, compactText, removeOldFiles, tryDelete
 from telegram.ext import Updater, MessageHandler, Filters
 import time
 import random
@@ -81,7 +81,7 @@ def sendDailyRead(msg):
     if 'force' in msg.text:
         removeOldFiles('tmp', day=0)
     tele.bot.send_message(msg.chat_id, getDailyRead(), disable_web_page_preview=True)
-    tmp.delete()
+    tryDelete(tmp)
 
 @log_on_fail(debug_group)
 def handleCommand(update, context):
@@ -89,7 +89,7 @@ def handleCommand(update, context):
     if not msg.text.startswith('/dr'):
         return
     sendDailyRead(msg)
-    msg.delete()
+    tryDelete(msg)
 
 @log_on_fail(debug_group)
 def handlePrivate(update, context):
