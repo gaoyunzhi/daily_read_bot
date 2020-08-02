@@ -8,6 +8,7 @@ import time
 import random
 from util import getLink
 import itertools
+from datetime import date
 
 with open('token') as f:
     token = f.read().strip()
@@ -73,7 +74,8 @@ def getDailyRead():
     items = itertools.islice(yieldDailyRead(), Limit)
     lines = ['【%s】%s' % item for item in items]
     lines = ['%d. %s' % (index + 1, item) for index, item in enumerate(lines)]
-    return '每日文章精选\n\n' + '\n\n'.join(lines)
+    return ('《每日文章精选 %s》 https://t.me/daily_read \n\n' % date.today().strftime("%Y-%m-%d") + 
+        '\n\n'.join(lines))
 
 def sendDailyRead(msg):
     tmp = msg.reply_text('sending')
