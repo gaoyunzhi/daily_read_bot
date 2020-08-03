@@ -112,9 +112,9 @@ if __name__ == '__main__':
     if 'once' in sys.argv:
         msg = debug_group.send_message('test')
         sendDailyRead(msg)
-        return
-    dp = tele.dispatcher
-    dp.add_handler(MessageHandler(Filters.command & (~ Filters.private), handleCommand))
-    dp.add_handler(MessageHandler(Filters.private, handlePrivate))
-    tele.start_polling()
-    tele.idle()
+    else:
+        dp = tele.dispatcher
+        dp.add_handler(MessageHandler(Filters.command & (~ Filters.private), handleCommand))
+        dp.add_handler(MessageHandler(Filters.private, handlePrivate))
+        tele.start_polling()
+        tele.idle()
