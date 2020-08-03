@@ -9,6 +9,7 @@ import random
 from util import getLink
 import itertools
 from datetime import date
+import sys
 
 with open('token') as f:
     token = f.read().strip()
@@ -58,6 +59,7 @@ def isBetterPost(post):
     return len(getComment(post.text)) > 10 and post.time > time.time() - 3 * Day
 
 def yieldDailyRead():
+    existing = set()
     start = time.time()
     posts = getPosts()
     posts = [post for post in posts if post.link]
@@ -67,8 +69,14 @@ def yieldDailyRead():
     for post in [post for post in posts if isBetterPost(post)] + [
         post for post in posts if not isBetterPost(post)]:
         link = getLink(post.text)
-        if link:
-            yield compactText(post.link.text), link
+        if not link:
+            continue
+        text = compactText(post.link.text)
+        if link in existing or text in existing:
+            continue
+        existing.add(link)
+        existing.add(text)
+        yield compactText(post.link.text), link
 
 def getDailyRead():
     items = itertools.islice(yieldDailyRead(), Limit)
@@ -101,6 +109,10 @@ def handlePrivate(update, context):
     sendDailyRead(msg)
 
 if __name__ == '__main__':
+    if 'once' in sys.argv:
+        msg = debug_group.send_message('test')
+        sendDailyRead(msg)
+        return
     dp = tele.dispatcher
     dp.add_handler(MessageHandler(Filters.command & (~ Filters.private), handleCommand))
     dp.add_handler(MessageHandler(Filters.private, handlePrivate))
