@@ -6,7 +6,7 @@ from telegram_util import log_on_fail, compactText, removeOldFiles, tryDelete
 from telegram.ext import Updater, MessageHandler, Filters
 import time
 import random
-from util import getLink
+from util import getLink, getCnLink
 import itertools
 from datetime import date
 import sys
@@ -76,7 +76,7 @@ def yieldDailyRead():
             continue
         existing.add(link)
         existing.add(text)
-        yield compactText(post.link.text), link
+        yield text, link
 
 def getDailyRead():
     items = itertools.islice(yieldDailyRead(), Limit)
@@ -108,13 +108,41 @@ def handlePrivate(update, context):
         return
     sendDailyRead(msg)
 
+@log_on_fail(debug_group)
+def handleUrl(update, context):
+    msg = update.effective_message
+    if not msg:
+        return
+    raw_links = msg.text.split()
+    raw_links = [x for x in raw_links if 'http' in x]
+    if not raw_links:
+        return
+    existing = set()
+    items = []
+    for raw_link in raw_links:
+        link = getCnLink(raw_link)
+        if not link:
+            continue
+        title = compactText(export_to_telegraph.getTitle(link))
+        if link in existing or title in existing:
+            continue
+        existing.add(link)
+        existing.add(title)
+        items.append((title, link))
+    lines = ['【%s】%s' % item for item in items]
+    lines = ['%d. %s' % (index + 1, item) for index, item in enumerate(lines)]
+    return ('《每日文章精选 %s》 https://t.me/daily_read \n\n' % date.today().strftime("%Y-%m-%d") + 
+        '\n\n'.join(lines))
+
+
 if __name__ == '__main__':
     if 'once' in sys.argv:
         msg = debug_group.send_message('test')
         sendDailyRead(msg)
     else:
         dp = tele.dispatcher
-        dp.add_handler(MessageHandler(Filters.command & (~ Filters.private), handleCommand))
+        dp.add_handler(MessageHandler(Filters.command, handleCommand))
+        dp.add_handler(MessageHandler(Filters.private & Filters.entity(TEXT_LINK), handleUrl))
         dp.add_handler(MessageHandler(Filters.private, handlePrivate))
         tele.start_polling()
         tele.idle()
