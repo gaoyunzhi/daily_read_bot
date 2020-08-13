@@ -134,9 +134,9 @@ def handleUrl(update, context):
         items.append((title, link))
     lines = ['【%s】%s' % item for item in items]
     lines = ['%d. %s' % (index + 1, item) for index, item in enumerate(lines)]
-    return ('《每日文章精选 %s》 https://t.me/daily_read \n\n' % date.today().strftime("%Y-%m-%d") + 
+    reply = ('《每日文章精选 %s》 https://t.me/daily_read \n\n' % date.today().strftime("%Y-%m-%d") + 
         '\n\n'.join(lines))
-
+    msg.reply_text(reply, disable_web_page_preview=True)
 
 if __name__ == '__main__':
     if 'once' in sys.argv:
@@ -144,8 +144,8 @@ if __name__ == '__main__':
         sendDailyRead(msg)
     else:
         dp = tele.dispatcher
-        dp.add_handler(MessageHandler(Filters.command, handleCommand))
+        dp.add_handler(MessageHandler((~Filters.private) & Filters.command, handleCommand))
         dp.add_handler(MessageHandler(Filters.private & Filters.entity(MessageEntity.URL), handleUrl))
-        dp.add_handler(MessageHandler(Filters.private, handlePrivate))
+        dp.add_handler(MessageHandler(Filters.private & (~Filters.entity(MessageEntity.URL)), handlePrivate))
         tele.start_polling()
         tele.idle()
