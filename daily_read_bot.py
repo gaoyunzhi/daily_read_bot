@@ -112,7 +112,6 @@ def handlePrivate(update, context):
 
 @log_on_fail(debug_group)
 def handleUrl(update, context):
-    print('handleUrl')
     msg = update.effective_message
     if not msg:
         return
