@@ -111,6 +111,7 @@ def handlePrivate(update, context):
 
 @log_on_fail(debug_group)
 def handleUrl(update, context):
+    print('handleUrl')
     msg = update.effective_message
     if not msg:
         return
@@ -143,7 +144,7 @@ if __name__ == '__main__':
     else:
         dp = tele.dispatcher
         dp.add_handler(MessageHandler(Filters.command, handleCommand))
-        dp.add_handler(MessageHandler(Filters.private & Filters.entity(MessageEntity.TEXT_LINK), handleUrl))
-        dp.add_handler(MessageHandler(Filters.private, handlePrivate))
+        dp.add_handler(MessageHandler(Filters.private & Filters.entity(MessageEntity.URL), handleUrl))
+        # dp.add_handler(MessageHandler(Filters.private, handlePrivate))
         tele.start_polling()
         tele.idle()
