@@ -4,6 +4,7 @@
 import webgram
 from telegram_util import log_on_fail, compactText, removeOldFiles, tryDelete
 from telegram.ext import Updater, MessageHandler, Filters
+from telegram import MessageEntity
 import time
 import random
 from util import getLink, getCnLink
@@ -142,7 +143,7 @@ if __name__ == '__main__':
     else:
         dp = tele.dispatcher
         dp.add_handler(MessageHandler(Filters.command, handleCommand))
-        dp.add_handler(MessageHandler(Filters.private & Filters.entity(TEXT_LINK), handleUrl))
+        dp.add_handler(MessageHandler(Filters.private & Filters.entity(MessageEntity.TEXT_LINK), handleUrl))
         dp.add_handler(MessageHandler(Filters.private, handlePrivate))
         tele.start_polling()
         tele.idle()
