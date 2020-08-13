@@ -11,6 +11,7 @@ from util import getLink, getCnLink
 import itertools
 from datetime import date
 import sys
+import export_to_telegraph
 
 with open('token') as f:
     token = f.read().strip()
@@ -145,6 +146,6 @@ if __name__ == '__main__':
         dp = tele.dispatcher
         dp.add_handler(MessageHandler(Filters.command, handleCommand))
         dp.add_handler(MessageHandler(Filters.private & Filters.entity(MessageEntity.URL), handleUrl))
-        # dp.add_handler(MessageHandler(Filters.private, handlePrivate))
+        dp.add_handler(MessageHandler(Filters.private, handlePrivate))
         tele.start_polling()
         tele.idle()
