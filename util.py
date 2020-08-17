@@ -16,7 +16,7 @@ def getCnLink(link):
 	link = getRawLink(link)
 	if not link:
 		return
-	if not matchKey(link, ['/note/', 'thepaper', 'weixin', 'zhihu.']):
+	if not matchKey(link, ['/note/', 'thepaper', 'weixin', 'zhihu.', 'cnpoliti']):
 		return
 	link = clearUrl(link)
 	# getTitle by default will cache
