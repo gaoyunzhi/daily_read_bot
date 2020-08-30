@@ -41,7 +41,7 @@ def shorter(x, y):
 		return y 
 
 def getShortLink(link):
-	if matchKey(link, ['weibo.', 'twitter.']):
+	if matchKey(link, ['weibo.', 'twitter.', 't.me/']):
 		return 
 	raw_link = getRawLink(link)
 	if isCN(export_to_telegraph.getTitle(raw_link)):
