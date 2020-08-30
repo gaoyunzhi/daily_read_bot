@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import cached_url
-from telegram_util import matchKey, clearUrl
+from telegram_util import matchKey, clearUrl, isCN
 import export_to_telegraph
 
 def getRawLink(link):
@@ -41,8 +41,10 @@ def shorter(x, y):
 		return y 
 
 def getShortLink(link):
+	if matchKey(link, ['weibo.', 'twitter.']):
+		return 
 	raw_link = getRawLink(link)
-	if export_to_telegraph.getTitle(raw_link):
+	if isCN(export_to_telegraph.getTitle(raw_link)):
 		return shorter(raw_link, link)
-	if export_to_telegraph.getTitle(link):
+	if isCN(export_to_telegraph.getTitle(link)):
 		return link

@@ -85,7 +85,7 @@ def yieldPoliticsRead():
     for post in posts[::-1]:
         link = getLink(post.text, getShortLink)
         if not link:
-            return
+            continue
         yield export_to_telegraph.getTitle(link), link
 
 def getDailyRead(method=yieldDailyRead):
