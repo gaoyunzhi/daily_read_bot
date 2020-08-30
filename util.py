@@ -25,11 +25,24 @@ def getCnLink(link):
 		return False
 	return link
 
-def getLink(text_field):
+def getLink(text_field, method=getCnLink):
 	for item in text_field:
 		if isinstance(item, str):
 			continue
 		if item.name == 'a':
-			link = getCnLink(item.get('href', ''))
+			link = method(item.get('href', ''))
 			if link:
 				return link
+
+def shorter(x, y):
+	if len(x) < len(y):
+		return x
+	else:
+		return y 
+
+def getShortLink(link):
+	raw_link = getRawLink(link)
+	if export_to_telegraph.getTitle(raw_link):
+		return shorter(raw_link, link)
+	if export_to_telegraph.getTitle(link):
+		return link

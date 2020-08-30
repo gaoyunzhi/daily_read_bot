@@ -7,7 +7,7 @@ from telegram.ext import Updater, MessageHandler, Filters
 from telegram import MessageEntity
 import time
 import random
-from util import getLink, getCnLink
+from util import getLink, getCnLink, getShortLink
 import itertools
 from datetime import date
 import sys
@@ -80,27 +80,38 @@ def yieldDailyRead():
         existing.add(text)
         yield text, link
 
-def getDailyRead():
-    items = itertools.islice(yieldDailyRead(), Limit)
+def yieldPoliticsRead():
+    posts = webgram.getPosts('freedom_watch', force_cache=True)[1:]
+    for post in posts[::-1]:
+        link = getLink(post.text, getShortLink)
+        if not link:
+            return
+        yield export_to_telegraph.getTitle(link), link
+
+def getDailyRead(method=yieldDailyRead):
+    items = itertools.islice(method(), Limit)
     lines = ['【%s】%s' % item for item in items]
     lines = ['%d. %s' % (index + 1, item) for index, item in enumerate(lines)]
     return ('《每日文章精选 %s》 https://t.me/daily_read \n\n' % date.today().strftime("%Y-%m-%d") + 
         '\n\n'.join(lines))
 
-def sendDailyRead(msg):
+def sendDailyRead(msg, method=yieldDailyRead):
     tmp = msg.reply_text('sending')
     removeOldFiles('tmp', day=0.1)
     if 'force' in msg.text:
         removeOldFiles('tmp', day=0)
-    tele.bot.send_message(msg.chat_id, getDailyRead(), disable_web_page_preview=True)
+    tele.bot.send_message(msg.chat_id, getDailyRead(method), disable_web_page_preview=True)
     tryDelete(tmp)
 
 @log_on_fail(debug_group)
 def handleCommand(update, context):
     msg = update.effective_message
-    if not msg.text.startswith('/dr'):
+    if msg.text.startswith('/dr'):
+        sendDailyRead(msg, yieldDailyRead)
+    elif msg.text.startswith('/pr'):
+        sendDailyRead(msg, yieldPoliticsRead)
+    else:
         return
-    sendDailyRead(msg)
     tryDelete(msg)
 
 @log_on_fail(debug_group)
@@ -140,7 +151,7 @@ def handleUrl(update, context):
 if __name__ == '__main__':
     if 'once' in sys.argv:
         msg = debug_group.send_message('test')
-        sendDailyRead(msg)
+        sendDailyRead(msg, yieldPoliticsRead)
     else:
         dp = tele.dispatcher
         dp.add_handler(MessageHandler((~Filters.private) & Filters.command, handleCommand))
