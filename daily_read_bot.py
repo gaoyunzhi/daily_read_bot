@@ -101,7 +101,7 @@ def sendDailyRead(msg, method=yieldDailyRead):
     removeOldFiles('tmp', day=0.1)
     if 'force' in msg.text:
         removeOldFiles('tmp', day=0)
-    tele.bot.send_message(msg.chat_id, getDailyRead(method), disable_web_page_preview=False)
+    tele.bot.send_message(msg.chat_id, getDailyRead(method), disable_web_page_preview=True)
     tryDelete(tmp)
 
 @log_on_fail(debug_group)
@@ -123,7 +123,7 @@ def handlePrivate(update, context):
     # book recommendation and download
     if not 2 <= len(msg.text) <= 100:
         msg.reply_text('请输入书名')
-    msg.reply_text(getBookRecommendation(msg.text), parse_mode='HTML', disable_web_page_preview=False)
+    msg.reply_text(getBookRecommendation(msg.text), parse_mode='HTML', disable_web_page_preview=True)
 
 @log_on_fail(debug_group)
 def handleUrl(update, context):
