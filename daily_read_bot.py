@@ -101,7 +101,7 @@ def sendDailyRead(msg, method=yieldDailyRead):
     removeOldFiles('tmp', day=0.1)
     if 'force' in msg.text:
         removeOldFiles('tmp', day=0)
-    tele.bot.send_message(msg.chat_id, getDailyRead(method), disable_web_page_preview=True)
+    tele.bot.send_message(msg.chat_id, getDailyRead(method), disable_web_page_preview=False)
     tryDelete(tmp)
 
 @log_on_fail(debug_group)
