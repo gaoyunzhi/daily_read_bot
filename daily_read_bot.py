@@ -10,6 +10,7 @@ import random
 from util import getLink, getCnLink, getShortLink
 import itertools
 from datetime import date
+from book import getBookRecommendation
 import sys
 import export_to_telegraph
 
@@ -119,7 +120,10 @@ def handlePrivate(update, context):
     msg = update.effective_message
     if not msg:
         return
-    sendDailyRead(msg)
+    # book recommendation and download
+    if not 2 <= len(msg.text) <= 100:
+        msg.reply_text('请输入书名')
+    msg.reply_text(getBookRecommendation(msg.text))
 
 @log_on_fail(debug_group)
 def handleUrl(update, context):
