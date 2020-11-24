@@ -123,7 +123,7 @@ def handlePrivate(update, context):
     # book recommendation and download
     if not 2 <= len(msg.text) <= 100:
         msg.reply_text('请输入书名')
-    msg.reply_text(getBookRecommendation(msg.text), parse_mode='HTML')
+    msg.reply_text(getBookRecommendation(msg.text), parse_mode='HTML', disable_web_page_preview=False)
 
 @log_on_fail(debug_group)
 def handleUrl(update, context):

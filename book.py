@@ -15,11 +15,13 @@ def getBookRecommendation(book_name):
 	soup = BeautifulSoup(cached_url.get(book_url), features='lxml')
 	rating = soup.find('strong', class_='rating_num').text
 	related = []
+	count = 0
 	for item in soup.find_all('a', {'href': True}):
 		if 'book-rec-books' not in str(item):
 			continue
 		if item.text.strip() and item['href'].startswith(book_prefix):
-			related.append('<a href="%s">%s</a>' % (item['href'], item.text.strip()))
+			count += 1
+			related.append('%d. <a href="%s">%s</a>' % (count, item['href'], item.text.strip()))
 	return '豆瓣书名： %s\n豆瓣评分： %s\n\n相关书籍：\n%s' % (
 		douban_book_name, rating, '\n'.join(related))
 
