@@ -159,13 +159,13 @@ def decorate(text):
 
 @log_on_fail(debug_group)
 def toWC(update, context):
-    msg = update.message
-    if not msg:
+    msg = update.channel_post
+    if not msg or msg.chat.id != -1001298159232:
         return
     soup = BeautifulSoup(msg.text_html_urled or msg.cap_html_urled, 'html.parser')
     elm = soup.find_all("a")[-1]
-    elm.replace(decotate(elm['href']))
-    text = elm.text.replace('\n', '\n\n')
+    elm.replace_with(decorate(elm['href']))
+    text = soup.text.replace('\n', '\n\n')
     for _ in range(5):
         text = text.replace('\n\n\n', '\n\n')
     msg.chat.send_message(text.strip(), disable_web_page_preview=True)
@@ -179,6 +179,6 @@ if __name__ == '__main__':
         dp.add_handler(MessageHandler((~Filters.private) & Filters.command, handleCommand))
         # dp.add_handler(MessageHandler(Filters.private & Filters.entity(MessageEntity.URL), handleUrl))
         # dp.add_handler(MessageHandler(Filters.private & (~Filters.entity(MessageEntity.URL)), handlePrivate))
-        dp.add_handler(MessageHandler(Filters.private, toWC))
+        dp.add_handler(MessageHandler(~Filters.command, toWC), group=2)
         tele.start_polling()
         tele.idle()
