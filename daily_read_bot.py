@@ -7,7 +7,7 @@ from telegram.ext import Updater, MessageHandler, Filters
 from telegram import MessageEntity
 import time
 import random
-from util import getLink, getCnLink, getShortLink
+from util import getLink, getCnLink, getShortLink, getRawLink
 import itertools
 from datetime import date
 from book import getBookRecommendation
@@ -155,6 +155,7 @@ def handleUrl(update, context):
     msg.reply_text(reply, disable_web_page_preview=True)
 
 def decorate(text):
+    text = getRawLink(text)
     return '\n【%s】 %s' % (getTitle(text), text)
 
 @log_on_fail(debug_group)
