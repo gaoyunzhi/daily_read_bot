@@ -179,6 +179,6 @@ if __name__ == '__main__':
         dp.add_handler(MessageHandler((~Filters.private) & Filters.command, handleCommand))
         # dp.add_handler(MessageHandler(Filters.private & Filters.entity(MessageEntity.URL), handleUrl))
         # dp.add_handler(MessageHandler(Filters.private & (~Filters.entity(MessageEntity.URL)), handlePrivate))
-        dp.add_handler(MessageHandler(Filters.private), toWC)
+        dp.add_handler(MessageHandler(Filters.private, toWC))
         tele.start_polling()
         tele.idle()
