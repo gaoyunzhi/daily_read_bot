@@ -13,6 +13,8 @@ from datetime import date
 from book import getBookRecommendation
 import sys
 import export_to_telegraph
+from export_to_telegraph import getTitle
+from bs4 import BeautifulSoup
 
 with open('token') as f:
     token = f.read().strip()
@@ -152,6 +154,22 @@ def handleUrl(update, context):
         '\n\n'.join(lines))
     msg.reply_text(reply, disable_web_page_preview=True)
 
+def decorate(text):
+    return '\n【%s】 %s' % (getTitle(text), text)
+
+@log_on_fail(debug_group)
+def toWC(update, context):
+    msg = update.message
+    if not msg:
+        return
+    soup = BeautifulSoup(msg.text_html_urled or msg.cap_html_urled, 'html.parser')
+    elm = soup.find_all("a")[-1]
+    elm.replace(decotate(elm['href']))
+    text = elm.text.replace('\n', '\n\n')
+    for _ in range(5):
+        text = text.replace('\n\n\n', '\n\n')
+    msg.chat.send_message(text.strip(), disable_web_page_preview=True)
+
 if __name__ == '__main__':
     if 'once' in sys.argv:
         msg = debug_group.send_message('test')
@@ -159,7 +177,8 @@ if __name__ == '__main__':
     else:
         dp = tele.dispatcher
         dp.add_handler(MessageHandler((~Filters.private) & Filters.command, handleCommand))
-        dp.add_handler(MessageHandler(Filters.private & Filters.entity(MessageEntity.URL), handleUrl))
-        dp.add_handler(MessageHandler(Filters.private & (~Filters.entity(MessageEntity.URL)), handlePrivate))
+        # dp.add_handler(MessageHandler(Filters.private & Filters.entity(MessageEntity.URL), handleUrl))
+        # dp.add_handler(MessageHandler(Filters.private & (~Filters.entity(MessageEntity.URL)), handlePrivate))
+        dp.add_handler(MessageHandler(Filters.private), toWC)
         tele.start_polling()
         tele.idle()
