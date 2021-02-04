@@ -155,6 +155,8 @@ def handleUrl(update, context):
     msg.reply_text(reply, disable_web_page_preview=True)
 
 def decorate(text):
+    if 'http' not in text:
+        text = 'https://' + text
     text = getRawLink(text)
     return '\n【%s】 %s' % (getTitle(text), text)
 
